@@ -1,0 +1,8 @@
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+        http-only: false
+  port: 8085
+
