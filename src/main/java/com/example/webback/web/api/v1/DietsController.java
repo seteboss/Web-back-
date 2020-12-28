@@ -7,11 +7,11 @@ import static com.example.webback.utils.ApiConstantUtils.DIETS;
 import com.example.webback.business.entity.DietsEntity;
 import com.example.webback.business.service.DietsService;
 import java.util.List;
+
+import com.example.webback.web.api.dto.create.DietsCreateDto;
+import com.example.webback.web.api.dto.read.DietsReadDto;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(DIETS)
@@ -21,12 +21,18 @@ public class DietsController {
 		private final DietsService dietsService;
 
 		@GetMapping("/{id}")
-		public DietsEntity findById(@PathVariable Integer id){
-				return dietsService.getById(id);
+		public DietsReadDto findById(@PathVariable Integer id){
+				return dietsService.findDtoById(id);
 		}
 
 		@GetMapping(ALL)
-		public List<DietsEntity> findAll(){
-				return dietsService.getAll();
+		public List<DietsReadDto> findAll(){
+				return dietsService.findAll();
 		}
+
+		@PostMapping("/save_diet")
+		public void save(@RequestBody DietsCreateDto dietsCreateDto){
+			dietsService.saveDto(dietsCreateDto);
+		}
+
 }

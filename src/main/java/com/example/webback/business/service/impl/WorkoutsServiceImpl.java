@@ -1,78 +1,42 @@
 package com.example.webback.business.service.impl;
 
-import com.example.webback.business.entity.ApproachEntity;
-import com.example.webback.business.entity.ExerciseEntity;
-import com.example.webback.business.entity.WorkoutsEntity;
-import com.example.webback.business.enums.ComplexityEnum;
-import com.example.webback.business.enums.ExerciseTypeEnum;
-import com.example.webback.business.enums.WorkoutsTypeEnum;
+import com.example.webback.business.dao.WorkoutsRepository;
 import com.example.webback.business.service.WorkoutsService;
-import java.util.ArrayList;
-import java.util.List;
+import com.example.webback.web.api.dto.create.WorkoutCreateDto;
+import com.example.webback.web.api.dto.read.WorkoutReadDto;
+import com.example.webback.web.api.dto.read.WorkoutReadSmallDto;
+import com.example.webback.web.api.error.ResourceNotFoundException;
+import com.example.webback.web.api.mappers.WorkoutMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WorkoutsServiceImpl implements WorkoutsService {
 
-		private List<ApproachEntity> initApproachEntitys(){
-				ApproachEntity approachEntity = new ApproachEntity();
-				approachEntity.setId(1);
-				approachEntity.setReiterationCount(10);
-				List<ApproachEntity> approachEntities = new ArrayList<>();
-				approachEntities.add(approachEntity);
-				approachEntities.add(approachEntity);
-				approachEntities.add(approachEntity);
-				return approachEntities;
-		}
+	private final WorkoutsRepository repository;
+	private final WorkoutMapper mapper;
 
-		private List<ExerciseEntity> initExerciseEntity(){
-				ExerciseEntity exerciseEntity = new ExerciseEntity();
-				exerciseEntity.setId(1);
-				exerciseEntity.setName("test");
-				exerciseEntity.setInfo("info");
-				exerciseEntity.setType(ExerciseTypeEnum.STATIC);
-				exerciseEntity.setApproach(initApproachEntitys());
+    public WorkoutsServiceImpl(WorkoutsRepository repository, WorkoutMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
-				List<ExerciseEntity> exerciseEntities = new ArrayList<>();
-				exerciseEntities.add(exerciseEntity);
-				exerciseEntities.add(exerciseEntity);
-				exerciseEntities.add(exerciseEntity);
-				return exerciseEntities;
-		}
+    @Override
+    public WorkoutReadDto findDtoById(Integer id) {
+        return mapper.toReadDto(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id)));
+    }
 
-		private List<WorkoutsEntity> init(){
-				WorkoutsEntity workoutsEntity = new WorkoutsEntity();
-				workoutsEntity.setId(1);
-				workoutsEntity.setName("test");
-				workoutsEntity.setComplexity(ComplexityEnum.AVERAGE);
-				workoutsEntity.setInfo("info");
-				workoutsEntity.setPreviewUri("uri");
-				workoutsEntity.setExercise(initExerciseEntity());
-				workoutsEntity.setType(WorkoutsTypeEnum.WEIGHT_GAIN);
-
-				WorkoutsEntity workoutsEntity2 = new WorkoutsEntity();
-				workoutsEntity.setId(2);
-				workoutsEntity.setName("test2");
-				workoutsEntity.setComplexity(ComplexityEnum.COMPLICATED);
-				workoutsEntity.setInfo("info");
-				workoutsEntity.setPreviewUri("uri");
-				workoutsEntity.setExercise(initExerciseEntity());
-				workoutsEntity.setType(WorkoutsTypeEnum.WEIGHT_GAIN);
-
-				List<WorkoutsEntity> workoutsEntities = new ArrayList<>();
-				workoutsEntities.add(workoutsEntity);
-				workoutsEntities.add(workoutsEntity2);
-				return  workoutsEntities;
+    @Override
+    public List<WorkoutReadSmallDto> findAll() {
+        return mapper.toReadSmallDtos(repository.findAll());
+    }
 
 
-		}
 
-
-		@Override public WorkoutsEntity getById(Integer id) {
-				return init().stream().filter(i -> i.getId().equals(id)).findFirst().get();
-		}
-
-		@Override public List<WorkoutsEntity> getAll() {
-				return init();
-		}
+    @Override
+    public void saveDto(WorkoutCreateDto dto) {
+        repository.save(mapper.toEntity(dto));
+    }
 }

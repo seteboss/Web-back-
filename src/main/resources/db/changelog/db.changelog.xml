@@ -1,0 +1,163 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <property name="blob_type" value="bytea" dbms="postgresql"/>
+
+
+  <changeSet id="12122020-2135" author="shaparenko">
+
+
+    <createTable tableName="diets">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_diets" unique="true" nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR"/>
+      <column name="info" type="VARCHAR"/>
+      <column name="type" type="smallint"/>
+      <column name="uri" type="VARCHAR"/>
+    </createTable>
+
+    <createTable tableName="eating">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_eating" unique="true" nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR"/>
+      <column name="info" type="VARCHAR"/>
+      <column name="diets_id" type="int">
+        <constraints nullable="false" references="diets(id)" foreignKeyName="eating_diets_fk"/>
+      </column>
+    </createTable>
+
+
+    <createTable tableName="workouts">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_workouts" unique="true" nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR"/>
+      <column name="info" type="VARCHAR"/>
+      <column name="type" type="smallint"/>
+      <column name="complexity" type="smallint"/>
+      <column name="uri" type="VARCHAR"/>
+    </createTable>
+
+    <createTable tableName="exercise">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_exercise" unique="true" nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR"/>
+      <column name="info" type="VARCHAR"/>
+      <column name="type" type="smallint"/>
+      <column name="workouts_id" type="int">
+        <constraints nullable="false" references="workouts(id)" foreignKeyName="exercise_workouts_fk"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="approach">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_approach" unique="true" nullable="false"/>
+      </column>
+      <column name="iteration" type="int"/>
+      <column name="exercise_id" type="int">
+        <constraints nullable="false" references="exercise(id)" foreignKeyName="approach_exercise_fk"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="authority">
+      <column name="id" remarks="ID" type="integer" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="authority_pkey"/>
+      </column>
+      <column name="name" type="varchar(255)">
+        <constraints unique="true" uniqueConstraintName="authority_name_uk"/>
+      </column>
+      <column name="description" type="varchar(1024)"/>
+      <column name="date_time_create" remarks="Дата время вставки записи" type="datetime"/>
+      <column name="date_time_modif" remarks="Дата время модификации записи" type="datetime"/>
+    </createTable>
+
+    <createTable tableName="oauth_client_details">
+      <column name="client_id" type="varchar(256)">
+        <constraints primaryKey="true" primaryKeyName="pk_oauth_client_details"/>
+      </column>
+      <column name="resource_ids" type="varchar(256)"/>
+      <column name="client_secret" type="varchar(256)"/>
+      <column name="scope" type="varchar(256)"/>
+      <column name="authorized_grant_types" type="varchar(256)"/>
+      <column name="web_server_redirect_uri" type="varchar(256)"/>
+      <column name="authorities" type="varchar(256)"/>
+      <column name="access_token_validity" type="int"/>
+      <column name="refresh_token_validity" type="int"/>
+      <column name="additional_information" type="varchar(4096)"/>
+      <column name="autoapprove" type="varchar(256)"/>
+    </createTable>
+
+    <createTable tableName="oauth_refresh_token">
+      <column name="token_id" type="varchar(255)"/>
+      <column name="token" type="${blob_type}"/>
+      <column name="authentication" type="${blob_type}"/>
+    </createTable>
+
+
+    <createTable tableName="users">
+      <column name="id" type="uuid">
+        <constraints primaryKey="true" primaryKeyName="user_data_pkey" unique="true" nullable="false"/>
+      </column>
+      <column name="username" type="varchar(1024)">
+        <constraints unique="true" nullable="false"/>
+      </column>
+      <column name="first_name" type="varchar(40)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="second_name" type="varchar(40)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="uri" type="varchar"/>
+      <column name="growth" type="integer"/>
+      <column name="weight" type="double"/>
+      <column name="account_confirmed" type="boolean"/>
+      <column name="account_expired" type="boolean"/>
+      <column name="account_locked" type="boolean"/>
+      <column name="credentials_expired" type="boolean"/>
+      <column name="enabled" type="boolean"/>
+      <column name="user_password" type="varchar(255)"/>
+      <column name="workouts_id" type="int">
+        <constraints nullable="true" references="workouts(id)" foreignKeyName="user_workouts_fk"/>
+      </column>
+      <column name="diets_id" type="int">
+        <constraints nullable="true" references="diets(id)" foreignKeyName="user_diets_fk"/>
+      </column>
+
+    </createTable>
+
+
+    <createTable tableName="graph_points">
+      <column name="id" remarks="ID" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="graph_points_pkey"/>
+      </column>
+      <column name="date" type="datetime"/>
+      <column name="value" type="double"/>
+      <column name="user_id" type="uuid">
+        <constraints nullable="false" references="users(id)" foreignKeyName="graph_points_user_fk"/>
+      </column>
+    </createTable>
+
+
+    <createTable tableName="user2authority">
+      <column name="user_id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="user2authority_pkey"
+          references="users(id)" foreignKeyName="user2authority_user_fk"
+        />
+      </column>
+      <column name="authority_id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="user2authority_pkey"
+          references="authority(id)" foreignKeyName="user2authority_authority_fk"/>
+      </column>
+    </createTable>
+
+
+  </changeSet>
+
+
+
+</databaseChangeLog>

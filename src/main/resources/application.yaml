@@ -1,8 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_URL:localhost:5432/my-fit}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:7144241}
+
+  jpa:
+    database: postgresql
+  liquibase:
+    changeLog: classpath:/db/changelog/db.changelog-master.xml
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    drop-first: false
+security:
+  oauth2:
+    authorization:
+      jwt:
+        key-store: classpath:jwt/jwt.jks
+        key-alias: jwt
+        key-store-password: storePassword
 server:
   servlet:
     session:
       cookie:
         secure: false
         http-only: false
-  port: 8085
-
+  port: 8090

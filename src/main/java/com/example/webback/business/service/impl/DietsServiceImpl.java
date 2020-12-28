@@ -1,56 +1,41 @@
 package com.example.webback.business.service.impl;
 
-import com.example.webback.business.entity.DietsEntity;
-import com.example.webback.business.entity.EatingEntity;
-import com.example.webback.business.enums.DietsTypeEnum;
+import com.example.webback.business.dao.DietsRepository;
 import com.example.webback.business.service.DietsService;
-import java.util.ArrayList;
+
 import java.util.List;
+
+import com.example.webback.web.api.dto.create.DietsCreateDto;
+import com.example.webback.web.api.dto.read.DietsReadDto;
+import com.example.webback.web.api.error.ResourceNotFoundException;
+import com.example.webback.web.api.mappers.DietsMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DietsServiceImpl implements DietsService {
 
-		private EatingEntity initEatingEntity(Integer id, String info, String name){
-				EatingEntity eatingEntity = new EatingEntity();
-				eatingEntity.setId(id);
-				eatingEntity.setInfo(info);
-				eatingEntity.setName(name);
-				return eatingEntity;
-		}
+	private final DietsRepository repository;
+	private final DietsMapper mapper;
 
-		private DietsEntity init(Integer id, DietsTypeEnum type, String uri, String info, String name, List<EatingEntity> eating){
-				DietsEntity dietsEntity = new DietsEntity();
-				dietsEntity.setName(name);
-				dietsEntity.setInfo(info);
-				dietsEntity.setPreviewUri(uri);
-				dietsEntity.setType(type);
-				dietsEntity.setId(id);
-				dietsEntity.setEating(eating);
-				return dietsEntity;
-		}
-
-		private List<DietsEntity> initList(){
-				List<EatingEntity> eatingEntities = new ArrayList<>();
-				eatingEntities.add(initEatingEntity(1,"TEST", "NAME"));
-				eatingEntities.add(initEatingEntity(2,"TEST", "NAME"));
-				eatingEntities.add(initEatingEntity(3,"TEST", "NAME"));
-
-				List<DietsEntity> dietsEntities = new ArrayList<>();
-				dietsEntities.add(init(1, DietsTypeEnum.SLIMMING, "uri", "info", "name", eatingEntities));
-				dietsEntities.add(init(2, DietsTypeEnum.WEIGHT_GAIN, "uri2", "info2", "name2", eatingEntities));
-
-				return dietsEntities;
-		}
+	public DietsServiceImpl(DietsRepository repository, DietsMapper mapper) {
+		this.repository = repository;
+		this.mapper = mapper;
+	}
 
 
-		@Override
-		public DietsEntity getById(Integer id) {
-				return initList().stream().filter(i -> i.getId().equals(id)).findFirst().get();
-		}
+	@Override
+	public DietsReadDto findDtoById(Integer id) {
+		return mapper.toReadDto(repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id)));
+	}
 
-		@Override
-		public List<DietsEntity> getAll() {
-				return initList();
-		}
+	@Override
+	public List<DietsReadDto> findAll() {
+		return mapper.toReadDtos(repository.findAll());
+	}
+
+	@Override
+	public void saveDto(DietsCreateDto dto) {repository.save(mapper.toEntity(dto));}
+
+
 }

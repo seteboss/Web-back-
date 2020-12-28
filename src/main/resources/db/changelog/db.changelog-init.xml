@@ -1,0 +1,115 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="blob_type" value="bytea" dbms="postgresql"/>
+    <changeSet id="17122020-2338" author="shaparenko">
+
+        <!--        mrITmgvgRXOn secret-->
+        <insert tableName="oauth_client_details">
+            <column name="client_id">ui</column>
+            <column name="client_secret">{bcrypt}$2a$10$euycXlphx.TV5n.RKSI2BuWTiIyd1SJN.IkxDn6sHkU2twyBHsVKW</column>
+            <column name="authorized_grant_types">
+                authorization_code,implicit,password,client_credentials,refresh_token
+            </column>
+            <column name="additional_information">{}</column>
+            <column name="authorities">ROLE_POST,ROLE_RECEIVE</column>
+            <column name="scope">ui</column>
+        </insert>
+
+        <!--        admin123-->
+        <insert tableName="users">
+            <column name="id">85e1ffd0-40a9-11eb-b378-0242ac130002</column>
+            <column name="username">bossGym@gmail.com</column>
+            <column name="first_name">Олег</column>
+            <column name="second_name">Олегович</column>
+            <column name="uri">test</column>
+            <column name="growth">80</column>
+            <column name="weight">180</column>
+            <column name="user_password">{bcrypt}$2a$10$uN9u8C75yyRYVYbh4KpTAea9i6y2dRtuNqtVooARvvZOBtnsbIoFu</column>
+            <column name="enabled">true</column>
+            <column name="account_locked">false</column>
+            <column name="account_expired">false</column>
+            <column name="account_confirmed">true</column>
+            <column name="account_confirmed">true</column>
+        </insert>
+
+        <insert tableName="authority">
+            <column name="id">1</column>
+            <column name="name">ADMIN</column>
+            <column name="description">null</column>
+            <column name="date_time_create" valueDate="now()"/>
+            <column name="date_time_modif" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="authority">
+            <column name="id">2</column>
+            <column name="name">USER</column>
+            <column name="description">null</column>
+            <column name="date_time_create" valueDate="now()"/>
+            <column name="date_time_modif" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="user2authority">
+            <column name="user_id" value="85e1ffd0-40a9-11eb-b378-0242ac130002"/>
+            <column name="authority_id" value="1"/>
+        </insert>
+
+
+    </changeSet>
+
+
+    <changeSet id="27122020-0129" author="shaparenko">
+        <insert tableName="workouts">
+            <column name="id">1</column>
+            <column name="name">Программа 1</column>
+            <column name="info">Данная программа будет интересна тем, кто хочет себя проверить на прочность.</column>
+            <column name="type">0</column>
+            <column name="complexity">1</column>
+            <column name="uri">/img/hand.png</column>
+        </insert>
+        <insert tableName="exercise">
+            <column name="id">1</column>
+            <column name="name">Жим штанги лежа</column>
+            <column name="info">это тяжелое базовое упражнение для проработки грудных мышц. Также оно дополнительно задействует переднюю часть плеча. Трицепсы в данном упражнении играют роль основных мышц-помощников.</column>
+            <column name="type">1</column>
+            <column name="workouts_id">1</column>
+        </insert>
+        <insert tableName="approach">
+            <column name="iteration">10</column>
+            <column name="exercise_id">1</column>
+        </insert>
+        <insert tableName="approach">
+            <column name="iteration">8</column>
+            <column name="exercise_id">1</column>
+        </insert>
+
+        <insert tableName="workouts">
+            <column name="id">2</column>
+            <column name="name">Программа 2</column>
+            <column name="info">Данная программа будет интересна тем, кто хочет себя проверить на прочность.</column>
+            <column name="type">0</column>
+            <column name="complexity">0</column>
+            <column name="uri">/img/бонус.png</column>
+        </insert>
+        <insert tableName="exercise">
+            <column name="id">2</column>
+            <column name="name">Жим штанги лежа</column>
+            <column name="info">это тяжелое базовое упражнение для проработки грудных мышц. Также оно дополнительно задействует переднюю часть плеча. Трицепсы в данном упражнении играют роль основных мышц-помощников.</column>
+            <column name="type">1</column>
+            <column name="workouts_id">2</column>
+        </insert>
+        <insert tableName="approach">
+            <column name="iteration">7</column>
+            <column name="exercise_id">2</column>
+        </insert>
+        <insert tableName="approach">
+            <column name="iteration">5</column>
+            <column name="exercise_id">2</column>
+        </insert>
+
+    </changeSet>
+
+
+</databaseChangeLog>

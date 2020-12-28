@@ -6,11 +6,12 @@ import static com.example.webback.utils.ApiConstantUtils.WORKOUTS;
 import com.example.webback.business.entity.WorkoutsEntity;
 import com.example.webback.business.service.WorkoutsService;
 import java.util.List;
+
+import com.example.webback.web.api.dto.create.WorkoutCreateDto;
+import com.example.webback.web.api.dto.read.WorkoutReadDto;
+import com.example.webback.web.api.dto.read.WorkoutReadSmallDto;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(WORKOUTS)
@@ -19,16 +20,19 @@ public class WorkoutsController {
 
 		private final WorkoutsService workoutsService;
 
-
 		@GetMapping("/{id}")
-		public WorkoutsEntity findById(@PathVariable Integer id){
-
-				return workoutsService.getById(id);
+		public WorkoutReadDto findById(@PathVariable Integer id){
+				return workoutsService.findDtoById(id);
 		}
 
 		@GetMapping(ALL)
-		public List<WorkoutsEntity> findAll(){
-				return workoutsService.getAll();
+		public List<WorkoutReadSmallDto> findAll(){
+				return workoutsService.findAll();
+		}
+
+		@PostMapping("/save_workout")
+		public void save(@RequestBody WorkoutCreateDto dto){
+			workoutsService.saveDto(dto);
 		}
 
 }
