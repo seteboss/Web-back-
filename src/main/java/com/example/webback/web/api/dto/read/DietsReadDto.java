@@ -11,6 +11,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DietsReadDto {
     Integer id;
+    String name;
     String info;
     DietsTypeEnum type;
     String previewUri;

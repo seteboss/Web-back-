@@ -152,8 +152,8 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = getById(id);
         List<PointReadDto> listDto = new ArrayList<>();
         List<GraghPointEntity> listEntity = entity.getPointEntities();
-        for (int i = listEntity.size(), j = 0; i > 0 || j < 5 ; i--, j++) {
-            GraghPointEntity graghPointEntity = listEntity.get(i);
+        for (int i = listEntity.size(), j = 0; i > 0 && j < 5 ; i--, j++) {
+            GraghPointEntity graghPointEntity = listEntity.get(j);
             PointReadDto readDto = new PointReadDto();
             readDto.setDate(graghPointEntity.getDate());
             readDto.setValue(graghPointEntity.getValue());
